@@ -4,7 +4,7 @@ File : database.py
 Purpose : Database Functions
 =========================================
 """
-
+import hashlib
 import pyodbc
 from config import *
 
@@ -28,8 +28,9 @@ class Database:
     # ---------------------------
     # Login
     # ---------------------------
-
     def login(self, table, user, pwd):
+
+        pwd = self.hash_password(pwd)
 
         sql = f"""
         SELECT *
@@ -42,33 +43,60 @@ class Database:
 
         return self.cur.fetchone()
 
+    # def addmanager(self, name, phone, user, pwd):
+    #     pwd = self.hash_password(pwd)
+    #
+    #     self.cur.execute(
+    #         """
+    #         INSERT INTO Manager(Name, Phone, Username, Password)
+    #         VALUES (?, ?, ?, ?)
+    #     #     """,
+        #     (name, phone, user, pwd)
+        # )
+        #
+        # self.conn.commit()
+
+
+
     # ---------------------------
     # Employee
     # ---------------------------
+    def addemployee(self, name, phone, user, pwd):
 
-    def addemployee(self, mgrid, name, phone, user, pwd):
+        pwd = self.hash_password(pwd)
 
         sql = """
         INSERT INTO Employee
         (
-            ManagerID,
             Name,
             Phone,
             Username,
             Password
         )
+        OUTPUT INSERTED.EmployeeID
         VALUES
         (
-            ?, ?, ?, ?, ?
+            ?, ?, ?, ?
         )
         """
 
         self.cur.execute(
             sql,
-            (mgrid, name, phone, user, pwd)
+            (name, phone, user, pwd)
         )
 
+        employeeid = self.cur.fetchone()[0]
+
         self.conn.commit()
+
+        return employeeid
+
+
+
+
+
+
+
 
     def getemployee(self):
 
@@ -130,31 +158,44 @@ class Database:
     # ---------------------------
     # Customer
     # ---------------------------
+    def addcustomer(self, name, phone, address, username, password):
 
-    def addcustomer(self, empid, name, phone, address, user, pwd):
+        password = self.hash_password(password)
 
         sql = """
         INSERT INTO Customer
         (
-            EmployeeID,
             Name,
             Phone,
             Address,
             Username,
             Password
         )
+        OUTPUT INSERTED.CustomerID
         VALUES
         (
-            ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?
         )
         """
 
         self.cur.execute(
             sql,
-            (empid, name, phone, address, user, pwd)
+            (name, phone, address, username, password)
         )
 
+        customerid = self.cur.fetchone()[0]
+
         self.conn.commit()
+
+        return customerid
+
+
+
+
+
+
+
+
 
     def getcustomer(self):
 
@@ -429,3 +470,18 @@ class Database:
         self.cur.close()
 
         self.conn.close()
+
+    def hash_password(self, password):
+        return hashlib.sha256(password.encode()).hexdigest()
+
+    def checkusername(self, table, username):
+
+        sql = f"""
+        SELECT 1
+        FROM {table}
+        WHERE Username = ?
+        """
+
+        self.cur.execute(sql, (username,))
+
+        return self.cur.fetchone()

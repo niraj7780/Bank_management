@@ -1,9 +1,5 @@
-"""
-=========================================
-File : utils.py
-Purpose : Helper Functions
-=========================================
-"""
+
+#  Helper Functions
 
 import random
 
@@ -38,7 +34,7 @@ def validpwd(pwd):
     return True
 
 
-# Check amount
+# Check amount 
 def validamt(amt):
 
     try:

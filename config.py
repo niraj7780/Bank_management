@@ -9,7 +9,7 @@ Purpose : Database Configuration
 
 server = r"LP-5CD2125V6V\SQLEXPRESS01"
 
-database = "BankDB"
+database = "newdbbank"
 
 driver = "{ODBC Driver 17 for SQL Server}"
 

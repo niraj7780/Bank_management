@@ -1,41 +1,100 @@
 """
 =========================================
-File : exceptions.py
-Purpose : Custom Exceptions
+File : database.py
+Purpose : Database Functions
 =========================================
 """
+import hashlib
+import pyodbc
+from config import *
 
 
-# Base exception
-class BankError(Exception):
-    pass
+class Database:
 
+    def __init__(self):
 
-# Login error
-class LoginError(BankError):
-    pass
+        self.conn = pyodbc.connect(
+            f"DRIVER={driver};"
+            f"SERVER={server};"
+            f"DATABASE={database};"
+            "Trusted_Connection=yes;"
+        )
 
+        self.cur = self.conn.cursor()
+        self.cur.execute("SELECT DB_NAME()")
+        print(self.cur.fetchone()[0])
 
-# Account not found
-class AccountError(BankError):
-    pass
+    # ---------------------------
+    # Password Hash
+    # ---------------------------
 
+    def hash_password(self, password):
+        return hashlib.sha256(password.encode()).hexdigest()
 
-# Low balance
-class BalanceError(BankError):
-    pass
+    # ---------------------------
+    # Login
+    # ---------------------------
 
+    def login(self, table, user, pwd):
 
-# Duplicate username
-class UserError(BankError):
-    pass
+        pwd = self.hash_password(pwd)
 
+        sql = f"""
+        SELECT *
+        FROM {table}
+        WHERE Username=?
+        AND Password=?
+        """
 
-# Invalid amount
-class AmountError(BankError):
-    pass
+        self.cur.execute(sql, (user, pwd))
 
+        return self.cur.fetchone()
 
-# Database error
-class DatabaseError(BankError):
-    pass
+    # ---------------------------
+    # Employee
+    # ---------------------------
+
+    def addemployee(self, name, phone, user, pwd):
+
+        pwd = self.hash_password(pwd)
+
+        sql = """
+        INSERT INTO Employee
+        (
+            Name,
+            Phone,
+            Username,
+            Password
+        )
+        VALUES
+        (
+            ?, ?, ?, ?
+        )
+        """
+
+        self.cur.execute(
+            sql,
+            (name, phone, user, pwd)
+        )
+
+        self.conn.commit()
+
+        self.cur.execute("SELECT SCOPE_IDENTITY()")
+        return int(self.cur.fetchone()[0])
+
+    # NOTE:
+    # Keep the rest of your methods exactly the same as in your current file.
+    # Only make these additional changes:
+    #
+    # 1. In addcustomer():
+    #    password = self.hash_password(password)
+    #    After commit:
+    #       self.cur.execute("SELECT SCOPE_IDENTITY()")
+    #       return int(self.cur.fetchone()[0])
+    #
+    # 2. Remove the duplicate hash_password() from the bottom.
+    #
+    # 3. In transfer():
+    #    except pyodbc.Error as e:
+    #        self.conn.rollback()
+    #        print("Database Error:", e)

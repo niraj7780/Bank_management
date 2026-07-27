@@ -11,9 +11,9 @@ from utils import *
 db = Database()
 
 
-# ==========================
+
 # Start
-# ==========================
+
 
 def start():
 
@@ -44,9 +44,9 @@ def start():
             print("\nInvalid Choice")
 
 
-# ==========================
+
 # Login
-# ==========================
+
 
 def login():
 
@@ -103,9 +103,9 @@ def login():
         print("\nInvalid Choice")
 
 
-# ==========================
+
 # Manager Menu
-# ==========================
+
 
 def manager():
 
@@ -124,6 +124,7 @@ def manager():
         if ch == "1":
 
             name = input("Name : ")
+
             phone = input("Phone : ")
             user = input("Username : ")
             pwd = input("Password : ")
@@ -134,7 +135,7 @@ def manager():
                 continue
 
             db.addemployee(
-                1,
+
                 name,
                 phone,
                 user,
@@ -186,7 +187,7 @@ def manager():
 
             empid = input("Employee ID : ")
             name = input("Name : ")
-            phone = input("Phone : ")
+            phone = int(input("Phone : "))
             user = input("Username : ")
 
             db.updateemployee(
@@ -215,9 +216,9 @@ def manager():
             print("\nInvalid Choice")
 
 
-# ==========================
+
 # Employee Menu
-# ==========================
+
 def employee():
 
     while True:
@@ -248,7 +249,7 @@ def employee():
                 print("\nCustomer Not Found")
                 continue
 
-            print("\n========== CUSTOMER ==========")
+            print("\n========== ============CUSTOMER =======================")
             print("ID      :", rows[0].CustomerID)
             print("Name    :", rows[0].Name)
             print("Phone   :", rows[0].Phone)
@@ -256,7 +257,7 @@ def employee():
             print("User    :", rows[0].Username)
 
             print("\nAccounts")
-            print("--------------------------------")
+            print("----------------------------------------------------------------")
 
             for row in rows:
 
@@ -289,13 +290,13 @@ def employee():
                         row.TransactionDate
                     )
 
-        # ==========================
+
         # Add Customer
-        # ==========================
+
 
         elif ch == "2":
 
-            empid = input("Employee ID : ")
+
             name = input("Name : ")
             phone = input("Phone : ")
             address = input("Address : ")
@@ -316,8 +317,7 @@ def employee():
 
                 continue
 
-            db.addcustomer(
-                empid,
+            customerid = db.addcustomer(
                 name,
                 phone,
                 address,
@@ -325,11 +325,11 @@ def employee():
                 pwd
             )
 
-            print("\nCustomer Added")
+            print("\nCustomer Added Successfully")
+            print("Customer ID :", customerid)
 
-        # ==========================
         # Open Account
-        # ==========================
+
         elif ch == "3":
 
             custid = input("Customer ID : ")
@@ -368,9 +368,9 @@ def employee():
             print("Account Number :", no)
 
 
-        # ==========================
+
         # Deposit
-        # ==========================
+
 
         elif ch == "4":
 
@@ -402,9 +402,9 @@ def employee():
 
             print("\nDeposit Successful")
 
-        # ==========================
+
         # Withdraw
-        # ==========================
+
 
         elif ch == "5":
 
@@ -436,9 +436,8 @@ def employee():
 
             print("\nWithdraw Successful")
 
-        # ==========================
+
         # Transfer
-        # ==========================
 
         elif ch == "6":
 
@@ -525,9 +524,9 @@ def customer():
 
 
         ch = input("\nEnter Choice : ")
-        # ==========================
+
         # My Accounts
-        # ==========================
+
 
         if ch == "1":
 

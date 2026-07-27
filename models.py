@@ -1,9 +1,4 @@
-"""
-=========================================
-File : models.py
-Purpose : Bank Models
-=========================================
-"""
+#bank model
 
 
 # ==========================================
@@ -24,20 +19,16 @@ class Person:
 # ==========================================
 # Manager
 # ==========================================
+class Employee(Person):
 
-class Manager(Person):
-
-    # Create manager object
-    def __init__(self, mgrId, name, phone, user, passw):
+    def __init__(self, empId, name, phone, user, passw):
 
         super().__init__(name, phone, user, passw)
 
-        self.mgrId = mgrId
+        self.empId = empId
 
-
-# ==========================================
 # Employee
-# ==========================================
+
 
 class Employee(Person):
 
@@ -50,25 +41,24 @@ class Employee(Person):
         self.mgrId = mgrId
 
 
-# ==========================================
+
 # Customer
-# ==========================================
+
 
 class Customer(Person):
 
     # Create customer object
-    def __init__(self, custId, empId, name, phone, address, user, passw):
+    def __init__(self, custId,  name, phone, address, user, passw):
 
         super().__init__(name, phone, user, passw)
 
         self.custId = custId
-        self.empId = empId
+
         self.address = address
 
 
-# ==========================================
 # Account
-# ==========================================
+
 
 class Account:
 
@@ -99,9 +89,8 @@ class Account:
         return self.__bal
 
 
-# ==========================================
+
 # Savings Account
-# ==========================================
 
 class SavingsAccount(Account):
 
@@ -115,9 +104,8 @@ class SavingsAccount(Account):
         return self.getBal() * 0.04
 
 
-# ==========================================
 # Current Account
-# ==========================================
+
 
 class CurrentAccount(Account):
 
@@ -131,9 +119,7 @@ class CurrentAccount(Account):
         return 0
 
 
-# ==========================================
-# Transaction
-# ==========================================
+
 
 class Transaction:
 
