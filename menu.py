@@ -9,6 +9,7 @@ from database import Database
 from utils import *
 
 db = Database()
+current_customer = None
 
 
 
@@ -86,23 +87,23 @@ def login():
 
             print("\nInvalid Login")
 
+
     elif role == "3":
+
+        global current_customer
 
         row = db.login("Customer", user, pwd)
 
         if row:
 
+            current_customer = row
+
             customer()
+
 
         else:
 
             print("\nInvalid Login")
-
-    else:
-
-        print("\nInvalid Choice")
-
-
 
 # Manager Menu
 
@@ -150,19 +151,19 @@ def manager():
 
             print()
 
-            print("-" * 70)
-            print("ID\tNAME\tPHONE\tUSERNAME")
-            print("-" * 70)
+            print("-" * 90)
+            print("ID-----------------------NAME--------------------PHONE--------------------USERNAME")
+            print("-" * 90)
 
             for row in rows:
 
                 print(
                     row.EmployeeID,
-                    "\t",
+                    "\t\t\t\t",
                     row.Name,
-                    "\t",
+                    "\t\t\t\t",
                     row.Phone,
-                    "\t",
+                    "\t\t\t\t",
                     row.Username
                 )
 
@@ -172,16 +173,17 @@ def manager():
 
             rows = db.searchemployee(name)
 
-            print()
-
-            for row in rows:
-
-                print(
-                    row.EmployeeID,
-                    row.Name,
-                    row.Phone,
-                    row.Username
-                )
+            if not rows:
+                print("\nEmployee not found.")
+            else:
+                print("\n========== EMPLOYEE DETAILS ==========")
+                for row in rows:
+                    print(f"""
+            Employee ID : {row.EmployeeID}
+            Name        : {row.Name}
+            Phone       : {row.Phone}
+            Username    : {row.Username}
+            """)
 
         elif ch == "4":
 
@@ -398,8 +400,6 @@ def employee():
 
             db.deposit(acc, amt)
 
-            db.addtransaction(acc, "Deposit", amt)
-
             print("\nDeposit Successful")
 
 
@@ -431,8 +431,6 @@ def employee():
             amt = float(input("Amount : "))
 
             db.withdraw(acc, amt)
-
-            db.addtransaction(acc, "Withdraw", amt)
 
             print("\nWithdraw Successful")
 
@@ -530,40 +528,53 @@ def customer():
 
         if ch == "1":
 
-            custid = input("Customer ID : ")
+            rows = db.getcustomerdetails(current_customer.CustomerID)
+            if rows:
+                row = rows[0]
 
-            rows = db.getaccountbycust(custid)
+                print("\n========== MY PROFILE ==========")
+
+                print(f"""
+            Customer ID    : {row.CustomerID}
+            Name           : {row.Name}
+            Phone          : {row.Phone}
+            Address        : {row.Address}
+            Username       : {row.Username}
+
+            Account Number : {row.AccountNumber}
+           
+            Balance        : ₹{row.Balance}
+           
+            """)
+
+        elif ch == "2":
+
+            rows = db.getaccountbycust(current_customer.CustomerID)
 
             if len(rows) == 0:
                 print("\nNo Account Found")
 
                 continue
 
-            print("\n========== MY ACCOUNTS ==========")
-            print("ACCOUNT NO\t\tBALANCE")
-            print("----------------------------------------")
+            print()
 
-            for row in rows:
-                print(
-                    row.AccountNumber,
-                    "\t",
-                    row.Balance
-                )
+            for i, row in enumerate(rows, start=1):
+                print(i, row.AccountNumber, row.Balance)
 
-        if ch == "2":
+            no = int(input("\nSelect Account : "))
 
-            accno1 = input("Account No : ")
+            acc = rows[no - 1].AccountNumber
 
-            bal = db.getbalance(accno1)
+            bal = db.getbalance(acc)
 
             print("\nBalance :", bal)
 
 
         elif ch == "3":
 
-            custid = input("Customer ID : ")
 
-            rows = db.getaccountbycust(custid)
+
+            rows = db.getaccountbycust(current_customer.CustomerID)
 
             if len(rows) == 0:
                 print("\nNo Account Found")
@@ -588,15 +599,13 @@ def customer():
 
             db.deposit(acc, amt)
 
-            db.addtransaction(acc, "Deposit", amt)
-
             print("\nDeposit Successful")
 
         elif ch == "4":
 
-            custid = input("Customer ID : ")
 
-            rows = db.getaccountbycust(custid)
+
+            rows = db.getaccountbycust(current_customer.CustomerID)
 
             if len(rows) == 0:
                 print("\nNo Account Found")
@@ -628,12 +637,24 @@ def customer():
 
             db.withdraw(acc, amt)
 
-            db.addtransaction(acc, "Withdraw", amt)
-
             print("\nWithdraw Successful")
         elif ch == "5":
 
-            acc = input("Account No : ")
+            rows = db.getaccountbycust(current_customer.CustomerID)
+
+            if len(rows) == 0:
+                print("\nNo Account Found")
+
+                continue
+
+            print()
+
+            for i, row in enumerate(rows, start=1):
+                print(i, row.AccountNumber)
+
+            no = int(input("\nSelect Account : "))
+
+            acc = rows[no - 1].AccountNumber
 
             rows = db.gettransaction(acc)
 
@@ -658,6 +679,3 @@ def customer():
 
             break
 
-        else:
-
-            print("\nInvalid Choice")

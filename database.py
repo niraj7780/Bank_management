@@ -43,21 +43,33 @@ class Database:
 
         return self.cur.fetchone()
 
-    # def addmanager(self, name, phone, user, pwd):
-    #     pwd = self.hash_password(pwd)
-    #
-    #     self.cur.execute(
-    #         """
-    #         INSERT INTO Manager(Name, Phone, Username, Password)
-    #         VALUES (?, ?, ?, ?)
-    #     #     """,
-        #     (name, phone, user, pwd)
-        # )
-        #
-        # self.conn.commit()
+    # ---------------------------
+    # Manager
+    # ---------------------------
 
+    def addmanager(self, name, phone, user, pwd):
 
+        pwd = self.hash_password(pwd)
 
+        sql = """
+        INSERT INTO Manager
+        (
+            Name,
+            Phone,
+            Username,
+            Password
+        )
+        OUTPUT INSERTED.ManagerID
+        VALUES (?, ?, ?, ?)
+        """
+
+        self.cur.execute(sql, (name, phone, user, pwd))
+
+        managerid = self.cur.fetchone()[0]
+
+        self.conn.commit()
+
+        return managerid
     # ---------------------------
     # Employee
     # ---------------------------
@@ -91,22 +103,9 @@ class Database:
 
         return employeeid
 
-
-
-
-
-
-
-
     def getemployee(self):
 
-        self.cur.execute(
-            """
-            SELECT *
-            FROM Employee
-            ORDER BY EmployeeID
-            """
-        )
+        self.cur.execute("EXEC EmployeeReport")
 
         return self.cur.fetchall()
 
@@ -189,65 +188,27 @@ class Database:
 
         return customerid
 
-
-
-
-
-
-
-
-
     def getcustomer(self):
 
-        self.cur.execute(
-            """
-            SELECT *
-            FROM Customer
-            ORDER BY CustomerID
-            """
-        )
+        self.cur.execute("EXEC CustomerReport")
 
         return self.cur.fetchall()
-
     # Show customer details
     def getcustomerdetails(self, custid):
-        sql = """
-        SELECT
-            c.CustomerID,
-            c.Name,
-            c.Phone,
-            c.Address,
-            c.Username,
-            a.AccountNumber,
-            a.Balance
-        FROM Customer c
-        LEFT JOIN Account a
-        ON c.CustomerID = a.CustomerID
-        WHERE c.CustomerID = ?
-        """
-
-        self.cur.execute(sql, (custid,))
-
-        return self.cur.fetchall()
-
-    def searchcustomer(self, name):
-
-        sql = """
-        SELECT *
-        FROM Customer
-        WHERE Name LIKE ?
-        """
 
         self.cur.execute(
-            sql,
-            ("%" + name + "%",)
+            "EXEC CustomerDetails ?",
+            (custid,)
         )
 
         return self.cur.fetchall()
 
-    # ---------------------------
+
+
+
+
     # Account
-    # ---------------------------
+
     def openaccount(self, custid, accno, acctype, bal):
         sql = """
         INSERT INTO Account
@@ -322,16 +283,10 @@ class Database:
     # ---------------------------
 
     def deposit(self, accno, amt):
-
         self.cur.execute(
-            """
-            UPDATE Account
-            SET Balance = Balance + ?
-            WHERE AccountNumber = ?
-            """,
-            (amt, accno)
+            "EXEC DepositMoney ?, ?",
+            (accno, amt)
         )
-
         self.conn.commit()
 
     # ---------------------------
@@ -339,16 +294,10 @@ class Database:
     # ---------------------------
 
     def withdraw(self, accno, amt):
-
         self.cur.execute(
-            """
-            UPDATE Account
-            SET Balance = Balance - ?
-            WHERE AccountNumber = ?
-            """,
-            (amt, accno)
+            "EXEC WithdrawMoney ?, ?",
+            (accno, amt)
         )
-
         self.conn.commit()
 
     # ---------------------------
@@ -409,21 +358,13 @@ class Database:
         self.conn.commit()
 
     def gettransaction(self, accno):
-            sql = """
-            SELECT
-                TransactionID,
-                AccountNumber,
-                TransactionType,
-                Amount,
-                TransactionDate
-            FROM [Transaction]
-            WHERE AccountNumber = ?
-            ORDER BY TransactionDate DESC
-            """
 
-            self.cur.execute(sql, (accno,))
+        self.cur.execute(
+            "EXEC MiniStatement ?",
+            (accno,)
+        )
 
-            return self.cur.fetchall()
+        return self.cur.fetchall()
 
 
 

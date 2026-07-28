@@ -211,45 +211,6 @@ python main.py
 
 ---
 
-# 📷 Sample Menu
-
-```
-==============================
-BANK MANAGEMENT SYSTEM
-==============================
-
-1. Login
-2. Exit
-```
-
----
-
-# 🔑 Default Login
-
-### Manager
-
-```
-Username : admin
-Password : admin123
-```
-
-### Employee
-
-```
-Username : rahul
-Password : rahul123
-```
-
-### Customer
-
-```
-Username : amit
-Password : amit123
-```
-
-*(Use the sample data you inserted into your database.)*
-
----
 
 # 🎯 Learning Outcomes
 
@@ -287,7 +248,3 @@ This project helped in learning:
 **HCLTech TechBee Scholar**
 
 ---
-
-# 📜 License
-
-This project is developed for educational and internship purposes.

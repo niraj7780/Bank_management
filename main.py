@@ -1,15 +1,23 @@
-"""
-=========================================
-File : main.py
-Purpose : Start Program
-=========================================
-"""
-
 from menu import start
+from database import Database
 
-start()
+try:
+    start()
 
+except KeyboardInterrupt:
 
+    print("\n\nProgram terminated by user.")
 
-# user manager , emp1 , cust1
-#password 123
+except Exception as e:
+
+    print("\nUnexpected Error:", e)
+
+finally:
+
+    try:
+        db = Database()
+        db.close()
+    except:
+        pass
+
+    print("Application Closed.")
