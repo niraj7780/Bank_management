@@ -1,10 +1,6 @@
 #bank model
 
 
-# ==========================================
-# Person (Parent Class)
-# ==========================================
-
 class Person:
 
     # Create person object
@@ -16,9 +12,9 @@ class Person:
         self.passw = passw
 
 
-# ==========================================
+
 # Manager
-# ==========================================
+
 class Employee(Person):
 
     def __init__(self, empId, name, phone, user, passw):

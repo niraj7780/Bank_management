@@ -1,10 +1,4 @@
-"""
-=========================================
-File : config.py
-Purpose : Database Configuration
-=========================================
-"""
-
+#here is all vairible whenever needed
 # SQL Server
 
 server = r"LP-5CD2125V6V\SQLEXPRESS01"

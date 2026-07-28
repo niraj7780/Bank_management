@@ -1,9 +1,4 @@
-"""
-=========================================
-File : database.py
-Purpose : Database Functions
-=========================================
-"""
+
 import hashlib
 import pyodbc
 from config import *
@@ -25,9 +20,9 @@ class Database:
         self.cur.execute("SELECT DB_NAME()")
         print(self.cur.fetchone()[0])
 
-    # ---------------------------
+
     # Login
-    # ---------------------------
+
     def login(self, table, user, pwd):
 
         pwd = self.hash_password(pwd)
@@ -43,9 +38,9 @@ class Database:
 
         return self.cur.fetchone()
 
-    # ---------------------------
+
     # Manager
-    # ---------------------------
+
 
     def addmanager(self, name, phone, user, pwd):
 
@@ -70,9 +65,9 @@ class Database:
         self.conn.commit()
 
         return managerid
-    # ---------------------------
+    #
     # Employee
-    # ---------------------------
+
     def addemployee(self, name, phone, user, pwd):
 
         pwd = self.hash_password(pwd)
@@ -154,9 +149,8 @@ class Database:
 
         self.conn.commit()
 
-    # ---------------------------
     # Customer
-    # ---------------------------
+
     def addcustomer(self, name, phone, address, username, password):
 
         password = self.hash_password(password)
@@ -278,9 +272,7 @@ class Database:
 
         return None
 
-    # ---------------------------
-    # Deposit
-    # ---------------------------
+
 
     def deposit(self, accno, amt):
         self.cur.execute(
@@ -289,9 +281,7 @@ class Database:
         )
         self.conn.commit()
 
-    # ---------------------------
-    # Withdraw
-    # ---------------------------
+
 
     def withdraw(self, accno, amt):
         self.cur.execute(
@@ -300,9 +290,7 @@ class Database:
         )
         self.conn.commit()
 
-    # ---------------------------
-    # Transfer
-    # ---------------------------
+
     def transfer(self, sendacc, recvacc, amt):
 
         try:
@@ -332,9 +320,7 @@ class Database:
             self.conn.rollback()
 
 
-    # ---------------------------
-    # Transaction
-    # ---------------------------
+
 
     def addtransaction(self, accno, transtype, amt):
         sql = """
@@ -364,8 +350,11 @@ class Database:
             (accno,)
         )
 
-        return self.cur.fetchall()
+        rows = self.cur.fetchall()
 
+
+
+        return rows
 
 
     # Show customer transactions
@@ -402,9 +391,7 @@ class Database:
 
         return self.cur.fetchall()
 
-    # ---------------------------
-    # Close
-    # ---------------------------
+
 
     def close(self):
 

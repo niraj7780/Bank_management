@@ -1,100 +1,58 @@
-"""
-=========================================
-File : database.py
-Purpose : Database Functions
-=========================================
-"""
-import hashlib
-import pyodbc
-from config import *
 
 
-class Database:
+class InvalidPhoneError(Exception):
 
-    def __init__(self):
+    def __init__(self, message="Phone number must contain exactly 10 digits."):
+        super().__init__(message)
 
-        self.conn = pyodbc.connect(
-            f"DRIVER={driver};"
-            f"SERVER={server};"
-            f"DATABASE={database};"
-            "Trusted_Connection=yes;"
-        )
 
-        self.cur = self.conn.cursor()
-        self.cur.execute("SELECT DB_NAME()")
-        print(self.cur.fetchone()[0])
+class InvalidUsernameError(Exception):
 
-    # ---------------------------
-    # Password Hash
-    # ---------------------------
+    def __init__(self, message="Username must be at least 4 characters long."):
+        super().__init__(message)
 
-    def hash_password(self, password):
-        return hashlib.sha256(password.encode()).hexdigest()
 
-    # ---------------------------
-    # Login
-    # ---------------------------
+class InvalidPasswordError(Exception):
 
-    def login(self, table, user, pwd):
+    def __init__(self, message="Password must contain at least 8 characters."):
+        super().__init__(message)
 
-        pwd = self.hash_password(pwd)
 
-        sql = f"""
-        SELECT *
-        FROM {table}
-        WHERE Username=?
-        AND Password=?
-        """
+class CustomerNotFoundError(Exception):
 
-        self.cur.execute(sql, (user, pwd))
+    def __init__(self, message="Customer not found."):
+        super().__init__(message)
 
-        return self.cur.fetchone()
 
-    # ---------------------------
-    # Employee
-    # ---------------------------
 
-    def addemployee(self, name, phone, user, pwd):
+class AccountNotFoundError(Exception):
 
-        pwd = self.hash_password(pwd)
+    def __init__(self, message="Account not found."):
+        super().__init__(message)
 
-        sql = """
-        INSERT INTO Employee
-        (
-            Name,
-            Phone,
-            Username,
-            Password
-        )
-        VALUES
-        (
-            ?, ?, ?, ?
-        )
-        """
 
-        self.cur.execute(
-            sql,
-            (name, phone, user, pwd)
-        )
 
-        self.conn.commit()
+class InsufficientBalanceError(Exception):
 
-        self.cur.execute("SELECT SCOPE_IDENTITY()")
-        return int(self.cur.fetchone()[0])
+    def __init__(self, message="Insufficient account balance."):
+        super().__init__(message)
 
-    # NOTE:
-    # Keep the rest of your methods exactly the same as in your current file.
-    # Only make these additional changes:
-    #
-    # 1. In addcustomer():
-    #    password = self.hash_password(password)
-    #    After commit:
-    #       self.cur.execute("SELECT SCOPE_IDENTITY()")
-    #       return int(self.cur.fetchone()[0])
-    #
-    # 2. Remove the duplicate hash_password() from the bottom.
-    #
-    # 3. In transfer():
-    #    except pyodbc.Error as e:
-    #        self.conn.rollback()
-    #        print("Database Error:", e)
+
+
+class InvalidAmountError(Exception):
+
+    def __init__(self, message="Amount must be greater than zero."):
+        super().__init__(message)
+
+
+class UsernameExistsError(Exception):
+
+    def __init__(self, message="Username already exists."):
+        super().__init__(message)
+
+
+
+class MinimumBalanceError(Exception):
+
+    def __init__(self, message="Minimum opening balance is 1000."):
+        super().__init__(message)

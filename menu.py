@@ -1,12 +1,8 @@
-"""
-=========================================
-File : menu.py
-Purpose : CLI Menu
-=========================================
-"""
 
+from exceptions import *
 from database import Database
 from utils import *
+
 
 db = Database()
 current_customer = None
@@ -22,7 +18,7 @@ def start():
 
         print("\n==============================")
         print(" BANK MANAGEMENT SYSTEM ")
-        print("==============================")
+        print("=====================================")
         print("1. Login")
         print("2. Exit")
 
@@ -130,9 +126,26 @@ def manager():
             user = input("Username : ")
             pwd = input("Password : ")
 
-            if not validphone(phone):
+            try:
+                if not validphone(phone):
+                    raise InvalidPhoneError()
 
-                print("Invalid Phone")
+            except InvalidPhoneError as e:
+                print(e)
+                continue
+            try:
+                if not validuser(user):
+                    raise InvalidUsernameError()
+
+            except InvalidUsernameError as e:
+                print(e)
+                continue
+            try:
+                if not validpwd(pwd):
+                    raise InvalidPasswordError()
+
+            except InvalidPasswordError as e:
+                print(e)
                 continue
 
             db.addemployee(
@@ -159,11 +172,11 @@ def manager():
 
                 print(
                     row.EmployeeID,
-                    "\t\t\t\t",
+                    "\t",
                     row.Name,
-                    "\t\t\t\t",
+                    "\t",
                     row.Phone,
-                    "\t\t\t\t",
+                    "\t",
                     row.Username
                 )
 
@@ -236,9 +249,9 @@ def employee():
 
         ch = input("\nEnter Choice : ")
 
-        # ==========================
+
         # Customer Details
-        # ==========================
+
 
         if ch == "1":
 
@@ -304,19 +317,27 @@ def employee():
             address = input("Address : ")
             user = input("Username : ")
             pwd = input("Password : ")
-            if not validphone(phone):
-                print("\nInvalid Phone")
+            try:
+                if not validphone(phone):
+                    raise InvalidPhoneError()
 
+            except InvalidPhoneError as e:
+                print(e)
+                continue
+            try:
+                if not validuser(user):
+                    raise InvalidUsernameError()
+
+            except InvalidUsernameError as e:
+                print(e)
                 continue
 
-            if not validuser(user):
-                print("\nInvalid Username")
+            try:
+                if not validpwd(pwd):
+                    raise InvalidPasswordError()
 
-                continue
-
-            if not validpwd(pwd):
-                print("\nInvalid Password")
-
+            except InvalidPasswordError as e:
+                print(e)
                 continue
 
             customerid = db.addcustomer(
@@ -652,9 +673,20 @@ def customer():
             for i, row in enumerate(rows, start=1):
                 print(i, row.AccountNumber)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("\nSelect Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("\nInvalid Account Selection")
+                    continue
+
+            except ValueError:
+                print("\nPlease enter a valid number.")
+                continue
 
             acc = rows[no - 1].AccountNumber
+
+
 
             rows = db.gettransaction(acc)
 
@@ -669,7 +701,7 @@ def customer():
                 for row in rows:
                     print(
                         row.TransactionID,
-                        row.AccountNumber,
+                        acc,
                         row.TransactionType,
                         row.Amount,
                         row.TransactionDate
