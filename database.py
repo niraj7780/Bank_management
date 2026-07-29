@@ -3,7 +3,6 @@ import hashlib
 import pyodbc
 from config import *
 
-
 class Database:
 
     # Connect Database

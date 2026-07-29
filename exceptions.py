@@ -1,5 +1,3 @@
-
-
 class InvalidPhoneError(Exception):
 
     def __init__(self, message="Phone number must contain exactly 10 digits."):

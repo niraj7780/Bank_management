@@ -200,28 +200,27 @@ def manager():
 
         elif ch == "4":
 
-            empid = input("Employee ID : ")
+            try:
+                empid = int(input("Employee ID : "))
+            except ValueError:
+                print("Employee ID must be a number")
+                continue
+
             name = input("Name : ")
-            phone = int(input("Phone : "))
+            phone = input("Phone : ")
             user = input("Username : ")
 
-            db.updateemployee(
-                empid,
-                name,
-                phone,
-                user
-            )
+            db.updateemployee(empid, name, phone, user)
 
             print("\nEmployee Updated")
 
         elif ch == "5":
-
-            empid = input("Employee ID : ")
-
-            db.deleteemployee(empid)
-
-            print("\nEmployee Deleted")
-
+            try:
+                empid = int(input("Employee ID : "))
+                db.deleteemployee(empid)
+                print("Employee Deleted")
+            except ValueError:
+                print("Invalid Employee ID. Enter numbers only.")
         elif ch == "6":
 
             break
@@ -373,7 +372,11 @@ def employee():
 
             acctype = input("Account Type (Saving/Current) : ")
 
-            bal = float(input("Opening Balance : "))
+            try:
+                bal = float(input("Opening Balance : "))
+            except ValueError:
+                print("Invalid Opening Balance")
+                continue
 
             if bal < 1000:
                 print("\nMinimum Balance is 1000")
@@ -413,11 +416,29 @@ def employee():
 
                 print(i, row.AccountNumber, row.Balance)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("Select Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("Invalid Selection")
+                    continue
+
+            except ValueError:
+                print("Enter numbers only")
+                continue
 
             acc = rows[no - 1].AccountNumber
 
-            amt = float(input("Amount : "))
+            try:
+                amt = float(input("Amount : "))
+
+                if amt <= 0:
+                    print("Invalid Amount")
+                    continue
+
+            except ValueError:
+                print("Invalid Amount")
+                continue
 
             db.deposit(acc, amt)
 
@@ -445,11 +466,29 @@ def employee():
 
                 print(i, row.AccountNumber, row.Balance)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("Select Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("Invalid Selection")
+                    continue
+
+            except ValueError:
+                print("Enter numbers only")
+                continue
 
             acc = rows[no - 1].AccountNumber
 
-            amt = float(input("Amount : "))
+            try:
+                amt = float(input("Amount : "))
+
+                if amt <= 0:
+                    print("Invalid Amount")
+                    continue
+
+            except ValueError:
+                print("Invalid Amount")
+                continue
 
             db.withdraw(acc, amt)
 
@@ -477,14 +516,31 @@ def employee():
 
                 print(i, row.AccountNumber)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("\nSelect Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("Invalid Account Selection")
+                    continue
+
+            except ValueError:
+                print("Please enter a valid number")
+                continue
 
             sendacc = rows[no - 1].AccountNumber
 
             recvacc = input("Receiver Account No : ")
 
+            if db.getbalance(recvacc) is None:
+                print("\nReceiver Account Not Found")
+                continue
 
-            amt = float(input("Amount : "))
+            try:
+                amt = float(input("Amount : "))
+
+            except ValueError:
+                print("Invalid Amount")
+                continue
 
             if amt <= 0:
                 print("\nInvalid Amount")
@@ -524,9 +580,9 @@ def employee():
             print("\nInvalid Choice")
 
 
-# ==========================
+
 # Customer Menu
-# ==========================
+
 
 def customer():
 
@@ -582,7 +638,16 @@ def customer():
             for i, row in enumerate(rows, start=1):
                 print(i, row.AccountNumber, row.Balance)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("\nSelect Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("Invalid Account Selection")
+                    continue
+
+            except ValueError:
+                print("Please enter a valid number")
+                continue
 
             acc = rows[no - 1].AccountNumber
 
@@ -607,11 +672,24 @@ def customer():
             for i, row in enumerate(rows, start=1):
                 print(i, row.AccountNumber, row.Balance)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("\nSelect Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("Invalid Account Selection")
+                    continue
+
+            except ValueError:
+                print("Please enter a valid number")
+                continue
 
             acc = rows[no - 1].AccountNumber
 
-            amt = float(input("Amount : "))
+            try:
+                amt = float(input("Amount : "))
+            except ValueError:
+                print("Invalid Amount")
+                continue
 
             if amt <= 0:
                 print("\nInvalid Amount")
@@ -638,11 +716,24 @@ def customer():
             for i, row in enumerate(rows, start=1):
                 print(i, row.AccountNumber, row.Balance)
 
-            no = int(input("\nSelect Account : "))
+            try:
+                no = int(input("\nSelect Account : "))
+
+                if no < 1 or no > len(rows):
+                    print("Invalid Account Selection")
+                    continue
+
+            except ValueError:
+                print("Please enter a valid number")
+                continue
 
             acc = rows[no - 1].AccountNumber
 
-            amt = float(input("Amount : "))
+            try:
+                amt = float(input("Amount : "))
+            except ValueError:
+                print("Invalid Amount")
+                continue
 
             if amt <= 0:
                 print("\nInvalid Amount")
@@ -696,7 +787,7 @@ def customer():
 
             else:
 
-                print("\n========== MINI STATEMENT ==========")
+                print("\n============= MINI STATEMENT ==========")
 
                 for row in rows:
                     print(
